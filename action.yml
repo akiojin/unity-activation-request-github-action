@@ -1,0 +1,11 @@
+name: 'unity-activation-request-github-action'
+description: 'This action generates a Unity activation file request file.'
+outputs:
+  alf-file:
+    description: 'Path of the output request file'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  icon: "box"
+  color: "orange"
