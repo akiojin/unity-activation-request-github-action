@@ -3321,15 +3321,14 @@ async function Run() {
         core.startGroup('Run Unity');
         await exec.exec(unity_command_1.Unity.GetExecutePath(os.platform()), builder.Build());
         core.endGroup();
-        fs.readdir(process.cwd(), function (err, files) {
-            if (err) {
-                throw err;
-            }
-            const fileList = files.filter(function (file) {
-                return fs.statSync(file).isFile() && /.*\.alf$/.test(file);
-            });
-            core.setOutput('alf-file', fileList[0]);
+        const files = (await fs.promises.readdir(process.cwd())).filter(function (file) {
+            return fs.statSync(file).isFile() && /.*\.alf$/.test(file);
         });
+        core.info(`cwd: ${process.cwd()}`);
+        for (const file of files) {
+            core.info(`alf file: ${file}`);
+        }
+        core.setOutput('alf-file', files[0]);
     }
     catch (ex) {
         core.setFailed(ex.message);

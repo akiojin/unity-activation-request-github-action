@@ -14,17 +14,16 @@ async function Run()
 		await exec.exec(Unity.GetExecutePath(os.platform()), builder.Build())
 		core.endGroup()
 
-		fs.readdir(process.cwd(), function(err, files) {
-			if (err) {
-				throw err;
-			}
+		const files = (await fs.promises.readdir(process.cwd())).filter(function(file) {
+			return fs.statSync(file).isFile() && /.*\.alf$/.test(file);
+		})
 
-			const fileList = files.filter(function(file) {
-				return fs.statSync(file).isFile() && /.*\.alf$/.test(file);
-			})
+		core.info(`cwd: ${process.cwd()}`)
+		for (const file of files) {
+			core.info(`alf file: ${file}`)
+		}
 
-			core.setOutput('alf-file', fileList[0])
-		});
+		core.setOutput('alf-file', files[0])
 	} catch (ex: any) {
 		core.setFailed(ex.message)
 	}
